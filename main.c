@@ -19,35 +19,58 @@ typedef struct NodeList{////////////////////////////////////////////////////////
 } NodeList;
 
 typedef struct List {//////////////////////////////////////////////////////////////////////////////////////////define lista
-    NodeList   *head;
-    int         elementos;
+    NodeList *head;
+    int elementos;
 } List;
 
 int main(){////////////////////////////////////////////////////////////////////////////////////////////////////main
+    char *printList(List *lista);
+    char *printTree(Node *novo);
+    List *createList();
     printf("\nRunning\n\n");
 
-    readiFileAndCount();
+    List *lista = createList();
+    readiFileAndCount(lista);
+
+    printf("List Size: %d\nList Content: %s\n", lista->elementos, printList(lista));
+
+    createTree(lista);
+   
+    printf("List Size: %d\nList Content: %s\n", lista->elementos, printList(lista));
 
     printf("\nDone\n\n");
     return 1;  
 } 
 
-void readiFileAndCount() {////////////////////////////////////////////////////////////////////////////////////ler e montar lista
-    Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita, Node *pai);
+void createTree(List *lista) {
+    NodeList *menor(List *lista);
+    Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita);
     NodeList *createNodeList (Node *obj);
-    List *createList();
-    char *printNode(Node* novo);
-    char *printList(List* lista);
 
-    List *lista = createList();
-    
-    
-    FILE* file = fopen("test.txt","r");
+    while (lista->elementos>1) {
+        Node *minor = menor(lista)->n;
+        Node *major = menor(lista)->n;
+        Node *tree = createNode(minor->frequencia+major->frequencia, '.', major, minor);
+        insereLista(createNodeList(tree), lista);
+    }
+
+}
+NodeList *menor(List *lista) {
+    NodeList *menor = lista->head;
+    lista->head = lista->head->proximo;
+    lista->elementos--;
+    return menor;
+}
+void readiFileAndCount(List *lista) {////////////////////////////////////////////////////////////////////////////////////ler e montar lista
+    Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita);
+    NodeList *createNodeList (Node *obj);
+       
+    FILE *file = fopen("test.txt","r");
     if(file == NULL) return NULL;
     fseek(file, 0, SEEK_END);
     long int size = ftell(file);
     rewind(file);
-    char* content = calloc(size + 1, 1);
+    char *content = calloc(size + 1, 1);
     fread(content,1,size,file);
     int counts[256] = { 0 };
     int i;
@@ -58,12 +81,10 @@ void readiFileAndCount() {//////////////////////////////////////////////////////
     for (i = 0; (i < 256); i++) {
         if (counts[i]!=0) {
             char c = i;
-            insereLista(createNodeList(createNode(counts[i], c, NULL, NULL, NULL)), lista);
+            insereLista(createNodeList(createNode(counts[i], c, NULL, NULL)), lista);
           //  printf("%c - %d\n", c, counts[i]);
         }
     }
-    printf("List Size: %d\nList Content: %s\n", lista->elementos, printList(lista));
-
 }
  
 void insereLista(NodeList *b, List *lista){//////////////////////////////////////////////////////////////////////////////////insere na lista
@@ -107,46 +128,38 @@ NodeList *createNodeList (Node *obj) {//////////////////////////////////////////
     return nodo;
 }
 
-Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita, Node *pai) {//////////////////////////////cria nodo
+Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita) {//////////////////////////////cria nodo
     Node *novo;
     if ( ( novo = malloc(sizeof(*novo)) ) == NULL ) return NULL;
     novo->frequencia = frequencia;
     novo->txt = txt;
     novo->esquerda = esquerda;
     novo->direita = direita;
-    novo->pai = pai;
     return novo;
 }
-char *printTree(Node* novo) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
-    char *print = (char *) malloc(sizeof(char) * 100);
 
-    if (!novo->esquerda) sprintf(print, "%d, %c", novo->frequencia, novo->txt);
-    else sprintf(print, "%d, %c, <{%d, %c}, >{%d, %c}, ^{%d, %c}",
-    novo->frequencia, 
-    novo->txt, 
-    novo->esquerda->frequencia, 
-    novo->esquerda->txt, 
-    novo->direita->frequencia, 
-    novo->direita->txt,
-    novo->pai->frequencia,
-    novo->pai->txt);
+char *printTree(Node *node) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
+    char *print = (char *) malloc(sizeof(char) * 100);
+    
+    sprintf(print, "%d, %c, {%d, %c}< >{%d, %c}", node->frequencia, node->txt, node->esquerda->frequencia, node->esquerda->txt, node->direita->frequencia, node->direita->txt);
+    
     return print;
 }
-char *printNode(Node* novo) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
+char *printNode(Node *node) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
     char *print = (char *) malloc(sizeof(char) * 100);
 
-    sprintf(print, "%d, %c", novo->frequencia, novo->txt);
+    sprintf(print, "%d, %c", node->frequencia, node->txt);
 
     return print;
 }
 
-char *printList(List* lista) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
+char *printList(List *lista) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
     char *print = (char *) malloc(sizeof(char) * 100);
     print[0] = '\0';
     NodeList *item = lista->head;
     if (!item) return "Lista Vazia";
     for (int i = 0; item; i++) {
-        sprintf(print, "%s{%s},", print, printNode(item->n));
+        sprintf(print, "%s{%s}, ", print, printNode(item->n));
         item = item->proximo;
     }
     return print;
