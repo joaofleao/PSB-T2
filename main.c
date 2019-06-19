@@ -37,6 +37,7 @@ void readiFileAndCount() {//////////////////////////////////////////////////////
     NodeList *createNodeList (Node *obj);
     List *createList();
     char *printNode(Node* novo);
+    char *printList(List* lista);
 
     List *lista = createList();
     
@@ -61,7 +62,7 @@ void readiFileAndCount() {//////////////////////////////////////////////////////
           //  printf("%c - %d\n", c, counts[i]);
         }
     }
-    printf("List Size: %d\nSmallest Node: %s\n", lista->elementos, printNode(lista->head->n));
+    printf("List Size: %d\nList Content: %s\n", lista->elementos, printList(lista));
 
 }
  
@@ -116,9 +117,9 @@ Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita, Node *
     novo->pai = pai;
     return novo;
 }
-char *printNode(Node* novo) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
+char *printTree(Node* novo) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
     char *print = (char *) malloc(sizeof(char) * 100);
-    
+
     if (!novo->esquerda) sprintf(print, "%d, %c", novo->frequencia, novo->txt);
     else sprintf(print, "%d, %c, <{%d, %c}, >{%d, %c}, ^{%d, %c}",
     novo->frequencia, 
@@ -129,5 +130,24 @@ char *printNode(Node* novo) {///////////////////////////////////////////////////
     novo->direita->txt,
     novo->pai->frequencia,
     novo->pai->txt);
+    return print;
+}
+char *printNode(Node* novo) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
+    char *print = (char *) malloc(sizeof(char) * 100);
+
+    sprintf(print, "%d, %c", novo->frequencia, novo->txt);
+
+    return print;
+}
+
+char *printList(List* lista) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
+    char *print = (char *) malloc(sizeof(char) * 100);
+    print[0] = '\0';
+    NodeList *item = lista->head;
+    if (!item) return "Lista Vazia";
+    for (int i = 0; item; i++) {
+        sprintf(print, "%s{%s},", print, printNode(item->n));
+        item = item->proximo;
+    }
     return print;
 }
