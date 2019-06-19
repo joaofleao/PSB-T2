@@ -117,10 +117,11 @@ Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita, Node *
     return novo;
 }
 char *printNode(Node* novo) {//////////////////////////////////////////////////////////////////////////////////////////printa nodo
-    char *print = (char *) malloc(sizeof(char) * 100);
+    const char base_string[] = "base_string";
+    char print [1000];
     
-    if (!novo->esquerda) sprintf(print, "%d, %c", novo->frequencia, novo->txt);
-    else sprintf(print, "%d, %c, <{%d, %c}, >{%d, %c}, ^{%d, %c}",
+    if (novo->esquerda==NULL) sprintf(print, "%s%d, %c", base_string, novo->frequencia, novo->txt);
+    else sprintf(print, "%s%d, %c, <{%d, %c}, >{%d, %c}, ^{%d, %c}", base_string, 
     novo->frequencia, 
     novo->txt, 
     novo->esquerda->frequencia, 
