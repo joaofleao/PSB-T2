@@ -29,11 +29,16 @@ int main(){/////////////////////////////////////////////////////////////////////
     char *printTree(Node *novo);
     bool pegaCodigo(Node *n, int c, char *buffer, int tamanho, bool option);
     List *createList();
-    printf("\nRunning\n\n");
+    printf("\nRunning...\n\n");
 
+
+    printf("Insira o nome de um arquivo: ");
+    char fileName[20];
+    scanf("%s", &fileName);
+    sprintf(fileName, "%s.txt", fileName);
     List *lista = createList();
-    readiFileAndCount(lista);
-    //printf("List Size: %d\nList Content: %s\n", lista->elementos, printList(lista));
+    readiFileAndCount(lista, fileName);
+    
     int tamanho = lista->elementos;
     createTree(lista);
     
@@ -41,7 +46,7 @@ int main(){/////////////////////////////////////////////////////////////////////
     if ( ( caminhamento = malloc(sizeof(*caminhamento)) ) == NULL ) return NULL;
 
 
-    FILE *final = fopen("final.txt", "r");
+    FILE *final = fopen("results.txt", "r");
     if (!final){
         printf("Erro ao abrir arquivo\n");
         return;
@@ -62,7 +67,7 @@ int main(){/////////////////////////////////////////////////////////////////////
 
 
     // printf("List Size: %d\nList Content: %s\n", lista->elementos, printList(lista));
-    translateAndPrint(total, lista);
+    translateAndPrint(total, lista, fileName);
 
 
     //printf("Tree: %s\n", printTree(lista->head->n));
@@ -74,10 +79,10 @@ int main(){/////////////////////////////////////////////////////////////////////
     printf("\nDone\n\n");
     return 1;  
 } 
-void translateAndPrint(char *total, List *lista) {
+void translateAndPrint(char *total, List *lista, char *fileName) {
     bool pegaCodigo(Node *n, int c, char *buffer, int tamanho, bool option);
     FILE *file;
-    file = fopen("test.txt", "r");
+    file = fopen(fileName, "r");
     int c;
     while ((c = fgetc(file)) != EOF){
         char buffer[1024] = {0};
@@ -89,7 +94,7 @@ void translateAndPrint(char *total, List *lista) {
 
     FILE *final;
     
-    final = fopen("final.txt", "w");    
+    final = fopen("results.txt", "w");    
 
     if (file == NULL){
     printf("error");
@@ -159,11 +164,11 @@ NodeList *menor(List *lista) {
     lista->elementos--;
     return menor;
 }
-void readiFileAndCount(List *lista) {////////////////////////////////////////////////////////////////////////////////////ler e montar lista
+void readiFileAndCount(List *lista, char *fileName) {////////////////////////////////////////////////////////////////////////////////////ler e montar lista
     Node *createNode(int frequencia, char txt, Node *esquerda, Node *direita, int codigo);
     NodeList *createNodeList (Node *obj);
        
-    FILE *file = fopen("test.txt","r");
+    FILE *file = fopen(fileName,"r");
     if(file == NULL) return NULL;
     fseek(file, 0, SEEK_END);
     long int size = ftell(file);
